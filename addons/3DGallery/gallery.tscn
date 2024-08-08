@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=3 uid="uid://cdvgvmm07j3da"]
+
+[ext_resource type="Script" path="res://addons/3DGallery/Tree.gd" id="1_cnlm1"]
+[ext_resource type="Script" path="res://addons/3DGallery/SubViewportContainer.gd" id="2_afv8e"]
+[ext_resource type="Script" path="res://addons/3DGallery/GalleryManager.gd" id="2_sjp15"]
+[ext_resource type="Script" path="res://addons/3DGallery/Gimbal.gd" id="3_a7dwe"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a5fhj"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_b4aty"]
+sky_material = SubResource("ProceduralSkyMaterial_a5fhj")
+
+[sub_resource type="Environment" id="Environment_q7d7j"]
+background_mode = 2
+background_color = Color(1, 1, 1, 1)
+sky = SubResource("Sky_b4aty")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Gallery" type="HSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offset = 350
+
+[node name="TabContainer" type="Control" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="3D Models" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GalleryTree" type="Tree" parent="TabContainer/3D Models"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+hide_root = true
+select_mode = 2
+script = ExtResource("1_cnlm1")
+
+[node name="Button" type="Button" parent="TabContainer/3D Models"]
+layout_mode = 2
+text = "Add to Mesh Libray"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+script = ExtResource("2_afv8e")
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(790, 648)
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_q7d7j")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="GalleryManager" type="Node3D" parent="SubViewportContainer/SubViewport"]
+script = ExtResource("2_sjp15")
+
+[node name="Gimbal" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.107062, 0, -0.994252, 0, 1, 0, 0.994252, 0, -0.107062, 0, 0, 0)
+script = ExtResource("3_a7dwe")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Gimbal"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.16, 0.2, 0.165)
+
+[node name="LightGimbal" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewportContainer/SubViewport/LightGimbal"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 33, 0)
+shadow_enabled = true
+spot_range = 33.0
+spot_angle = 20.0
+
+[node name="FogVolume" type="FogVolume" parent="SubViewportContainer/SubViewport/LightGimbal/SpotLight3D"]
