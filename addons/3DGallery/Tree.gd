@@ -10,7 +10,6 @@ func _ready():
 	connect("multi_selected", _on_multi_selected)
 	build_file_tree()
 
-
 func build_file_tree():
 	walk_file_tree("res://")
 	var root = create_item()
@@ -39,7 +38,12 @@ func walk_file_tree(path):
 					walk_file_tree("/".join([path, file_name]))
 				else:
 					walk_file_tree(path + file_name)
-			elif file_name.ends_with(".fbx") or file_name.ends_with(".gltf"):
+			elif file_name.ends_with(".fbx") \
+				or file_name.ends_with(".gltf") \
+				or file_name.ends_with(".glb") \
+				or file_name.ends_with(".blend") \
+				or file_name.ends_with(".obj") \
+				or file_name.ends_with(".dae"):
 
 				var full_path: String
 				if path != "res://":

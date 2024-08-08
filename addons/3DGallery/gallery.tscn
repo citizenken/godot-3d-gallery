@@ -49,10 +49,6 @@ hide_root = true
 select_mode = 2
 script = ExtResource("1_cnlm1")
 
-[node name="Button" type="Button" parent="TabContainer/3D Models"]
-layout_mode = 2
-text = "Add to Mesh Libray"
-
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -81,13 +77,3 @@ script = ExtResource("3_a7dwe")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Gimbal"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.16, 0.2, 0.165)
-
-[node name="LightGimbal" type="Node3D" parent="SubViewportContainer/SubViewport"]
-
-[node name="SpotLight3D" type="SpotLight3D" parent="SubViewportContainer/SubViewport/LightGimbal"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 33, 0)
-shadow_enabled = true
-spot_range = 33.0
-spot_angle = 20.0
-
-[node name="FogVolume" type="FogVolume" parent="SubViewportContainer/SubViewport/LightGimbal/SpotLight3D"]

@@ -12,5 +12,5 @@ func _input(event: InputEvent):
 		rot_z += event.relative.y * LOOKAROUND_SPEED
 		rot_x += event.relative.x * LOOKAROUND_SPEED
 		transform.basis = Basis() # reset rotation
-		rotate_object_local(Vector3(0, 1, 0), rot_x) # first rotate in Y
-		rotate_object_local(Vector3(0, 0, 1), rot_z) # first rotate in Y
+		rotate_object_local(Vector3(0, 1, 0), rot_x)
+		rotate_object_local(Vector3(0, 0, 1), rot_z)

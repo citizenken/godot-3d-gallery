@@ -2,18 +2,20 @@
 extends Node3D
 
 const CAMERA_DISTANCE = 0.5
+const LOOKAROUND_SPEED = 0.0005
 
 @onready var tree: GalleryTree = %GalleryTree
 
+
 var current_model: int = 0
 var models: Array[Dictionary]
+var rot_z = 0
+var rot_y = 0
 
 func _ready():
 	tree.selected_tree_items_change.connect(update_models)
 
-const LOOKAROUND_SPEED = 0.0005
-var rot_z = 0
-var rot_y = 0
+
 func _input(event: InputEvent):
 	if event is InputEventMouseMotion \
 		and event.button_mask & 2:
@@ -47,7 +49,7 @@ func update_models(selected_tree_items: Array):
 		update_camera(aabb)
 
 func update_camera(aabb: AABB):
-	var new_pos = Vector3(aabb.size.x + 1, 0 , 0)
+	var new_pos = Vector3(aabb.size.x + CAMERA_DISTANCE, 0 , 0)
 	var new_gimbal_pos = Vector3(0, aabb.size.y/2, 0)
 
 	$"../Gimbal".position = new_gimbal_pos
