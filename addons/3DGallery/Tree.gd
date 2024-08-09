@@ -5,10 +5,20 @@ extends Tree
 signal selected_tree_items_change(selected_tree_items: Array)
 
 var file_tree: Dictionary
+var items: Array[TreeItem] = []
+var current_item_idx: int = 0
 
 func _ready():
-	connect("multi_selected", _on_multi_selected)
+	connect("item_selected", _on_single_selected)
+	connect("visibility_changed", _on_vis_change)
 	build_file_tree()
+	set_selected(items[current_item_idx], 0)
+
+func _on_vis_change():
+	if visible:
+		grab_focus()
+	else:
+		release_focus()
 
 func build_file_tree():
 	walk_file_tree("res://")
@@ -19,13 +29,16 @@ func build_file_tree():
 func add_items_to_tree(file_tree: Dictionary, root: TreeItem, tree: Tree):
 	for key in file_tree.keys():
 		var item = tree.create_item(root)
+		items.append(item)
 		item.set_text(0, key)
 		if file_tree[key] is Dictionary and not file_tree[key].keys().is_empty():
 			add_items_to_tree(file_tree[key], item, tree)
 			item.set_meta("is_dir", true)
+			item.set_meta("path", key)
 		else:
 			item.set_tooltip_text(0, file_tree[key])
 			item.set_meta("path", file_tree[key])
+			item.set_meta("is_dir", false)
 
 func walk_file_tree(path):
 	var dir = DirAccess.open(path)
@@ -79,10 +92,21 @@ func _add_recursive_keys(d: Dictionary, keys: PackedStringArray, full_path: Stri
 		_add_recursive_keys(d[key], keys.slice(1, keys.size()), full_path)
 
 var selected_tree_items: Array = []
+
+func _on_single_selected():
+	selected_tree_items = []
+	var item = get_selected()
+	if !item.get_meta("is_dir"):
+		var model_path = item.get_meta("path")
+		selected_tree_items.append(model_path)
+
+	emit_signal("selected_tree_items_change", selected_tree_items)
+
+
 func _on_multi_selected(item: TreeItem, column: int, selected: bool):
-	if item.has_meta("is_dir"):
+	if item.get_meta("is_dir"):
 		for c: TreeItem in item.get_children():
-			if c.has_meta("path"):
+			if !c.get_meta("is_dir"):
 				var model_path = c.get_meta("path")
 				if selected:
 					selected_tree_items.append(model_path)
@@ -90,7 +114,7 @@ func _on_multi_selected(item: TreeItem, column: int, selected: bool):
 					var idx = selected_tree_items.find(model_path)
 					selected_tree_items.remove_at(idx)
 
-	elif item.has_meta("path"):
+	elif !item.get_meta("is_dir"):
 		var model_path = item.get_meta("path")
 		if selected:
 			selected_tree_items.append(model_path)

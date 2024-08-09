@@ -1,7 +1,7 @@
 @tool
 extends Node3D
 
-const CAMERA_DISTANCE = 0.5
+const CAMERA_DISTANCE = 0.1
 const LOOKAROUND_SPEED = 0.0005
 
 @onready var tree: GalleryTree = %GalleryTree
@@ -11,20 +11,30 @@ var current_model: int = 0
 var models: Array[Dictionary]
 var rot_z = 0
 var rot_y = 0
+var shift: bool = false
 
 func _ready():
+	%ResetButton.pressed.connect(_reset_rotations)
 	tree.selected_tree_items_change.connect(update_models)
 
-
 func _input(event: InputEvent):
+	if event is InputEventKey:
+		if event.keycode == KEY_SHIFT:
+			if event.pressed:
+				shift = true
+			else:
+				shift = false
+
 	if event is InputEventMouseMotion \
 		and event.button_mask & 2:
-			var model = models[current_model]["node"]
+			var model: Node3D = models[current_model]["node"]
 			rot_z += event.relative.y * LOOKAROUND_SPEED
 			rot_y += event.relative.x * LOOKAROUND_SPEED
 			transform.basis = Basis() # reset rotation
-			model.rotate_object_local(Vector3(0, 1, 0), rot_y)
-
+			if not shift:
+				model.rotate_object_local(Vector3(0, 1, 0), rot_y)
+			else:
+				model.rotate_object_local(Vector3(0, 0, 1), rot_z)
 
 func update_models(selected_tree_items: Array):
 	models = []
@@ -52,8 +62,8 @@ func update_camera(aabb: AABB):
 	var new_pos = Vector3(aabb.size.x + CAMERA_DISTANCE, 0 , 0)
 	var new_gimbal_pos = Vector3(0, aabb.size.y/2, 0)
 
-	$"../Gimbal".position = new_gimbal_pos
-	$"../Gimbal/Camera3D".position = new_pos
+	%Gimbal.position = new_gimbal_pos
+	%Camera3D.position = new_pos
 
 func get_instance_aabb(node: Node3D, aabb: AABB) -> AABB:
 	if not node is MeshInstance3D:
@@ -67,3 +77,9 @@ func get_instance_aabb(node: Node3D, aabb: AABB) -> AABB:
 	else:
 		var mesh: MeshInstance3D = node as MeshInstance3D
 		return mesh.get_aabb()
+
+func _reset_rotations():
+	if models:
+		var model: Node3D = models[current_model]["node"]
+		model.rotation = Vector3.ZERO
+		%Gimbal.rotation = Vector3.ZERO

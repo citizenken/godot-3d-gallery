@@ -27,7 +27,7 @@ func _make_visible(visible):
 		main_panel_instance.visible = visible
 
 func _get_plugin_name():
-	return "3D Model Gallery"
+	return "3D Gallery"
 
 
 func _get_plugin_icon():
