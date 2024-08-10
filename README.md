@@ -1,5 +1,7 @@
 # 3D Gallery
 
+![3D gallery screenshot](./screen_shot.png)
+
 3D Gallery is a Godot 4+ plugin that makes viewing imported 3D models easier. Rather than clicking on each model to view it in the import popup, or adding it to a scene, 3D Gallery allows you to quickly scan through your filesystem previewing each model. This comes in handy when you have a large number of models and want to flip through them quickly (ex. after purchasing an asset library).
 
 3D will walk your project directory, looking for any Godot-supported 3D model formats (`.blend`, `.obj`, `.glb`, `.gltf`, `.fbx`, `.dae`), and present them in a filetree format. Then, you can click or use your arrow keys to easily preview each model.
